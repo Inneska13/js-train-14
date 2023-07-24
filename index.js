@@ -11,8 +11,17 @@
  */
 function getDateDetails(date) {
   // Перевірка, чи є вхідне значення об'єктом Date,це можно зробити перевіривши чи є date.getTime по типу функція .
+  if (!(date instanceof Date)) {
+    return "Помилка: вхідне значення має бути об'єктом Date";
+  }
+
   // Якщо date не є об'єктом Date, повертаємо рядок
   // "Помилка: вхідне значення має бути об'єктом Date"
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const day = date.getDate();
+  return { year, month, day };
+
   // Повертаємо об'єкт, що містить деякі деталі про вхідний об'єкт Date.
 }
 
@@ -33,11 +42,20 @@ console.log(getDateDetails(new Date("2023-12-25T00:00:00Z")));
 function setDateDetails(date, isoString) {
   // Перевірка, чи є вхідне значення об'єктом Date,це можно зробити перевіривши чи є date.getTime по типу функція .
   // Якщо date не є об'єктом Date, повертаємо рядок
+  if (!(date instanceof Date)) {
+    return "Помилка: вхідне значення має бути об'єктом Date";
+  }
   // "Помилка: вхідне значення має бути об'єктом Date"
   // Перевірка, чи є вхідний ISO рядок валідним, отримавши дату з рядка та перевірити чи є результат числом,
   //  якщо ні виводимо повідомлення "Помилка: недійсний ISO рядок"
+  const parsedDate = new Date(isoString);
+  if (isNaN(parsedDate.getTime())) {
+    return "Помилка: недійсний ISO рядок";
+  }
   // Встановлюємо дату з ISO рядка в об'єкт Date.
+  date.setTime(parsedDate.getTime());
   // Повертаємо об'єкт Date з встановленою датою.
+  return date;
 }
 
 console.log("Завдання: 2 ==============================");
@@ -55,9 +73,13 @@ console.log(setDateDetails(date, "2023-12-25T00:00:00Z"));
  */
 function dateToUTC(date) {
   // Перевірка, чи є вхідне значення об'єктом Date,це можно зробити перевіривши чи є date.getTime по типу функція .
+  if (!(date instanceof Date)) {
+    return "Помилка: вхідне значення має бути об'єктом Date";
+  }
   // Якщо date не є об'єктом Date, повертаємо рядок
   // "Помилка: вхідне значення має бути об'єктом Date"
   // Повертаємо рядок з датою в UTC форматі.
+  return date.toUTCString();
 }
 
 console.log("Завдання: 3 ==============================");
@@ -80,8 +102,16 @@ function setSpecificTime(date, hours, minutes, seconds, milliseconds) {
   // Перевірка, чи є вхідне значення об'єктом Date,це можно зробити перевіривши чи є date.getTime по типу функція .
   // Якщо date не є об'єктом Date, повертаємо рядок
   // "Помилка: вхідне значення має бути об'єктом Date"
+  if (!(date instanceof Date)) {
+    return "Помилка: вхідне значення має бути об'єктом Date";
+  }
   // Встановлюємо конкретний час в об'єкті Date за допомогою setHours.
+  date.setHours(hours);
+  date.setMinutes(minutes);
+  date.setSeconds(seconds);
+  date.setMilliseconds(milliseconds);
   // Повертаємо об'єкт Date з встановленим часом.
+  return date;
 }
 
 console.log("Завдання: 4 ==============================");
@@ -107,15 +137,25 @@ console.log(
  */
 function nextNewYear() {
   // Створюєму змінну в яку записуємо поточну дату
+  const currentDate = new Date();
+
   // Визначення поточного року.
+  const currentYear = date.getFullYear();
   // Визначення дати наступного Нового року. Для цього створюємо новий об`єкт Date в якому збільшуємо поточний рік на 1, встановлюємо місяць на 0 а дату на 1
+  const nextYearDate = new Date(currentYear + 1, 0, 1);
   // Визначаємо кількість мілісекунд до наступного Нового року в змінну diff.
+  const diff = nextYearDate - currentDate;
   // Розраховуємо кількість повних днів, годин, хвилин і секунд.
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
   // Дні:diff / (1000 * 60 * 60 * 24)
   // Години:(diff / (1000 * 60 * 60)) % 24
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
   // Хвилини: (diff / (1000 * 60)) % 60;
+  const minutes = Math.floor((diff / (1000 * 60)) % 60);
   // Секунди:(diff / 1000) % 60;
+  const seconds = Math.floor((diff % 1000) % 60);
   // Мілісекунди:  diff % 1000;
+  return { nextNewYearDate: nextYearDate, days, hours, minutes, seconds };
 }
 
 console.log("Завдання:5  ==============================");
@@ -137,9 +177,17 @@ console.log(nextNewYear());
  */
 function isLeapYear(year) {
   // Перевірка, чи є вхідне значення числом якщо ні повертаємо рядок .
+  if (typeof year !== "number") {
+    return year;
+  }
   // Перевірка, чи є рік високосним.
   // Високосним вважається рік, який ділиться націло на 4
+  const isLeap = year % 4 === 0;
   // Повертаємо об'єкт з роком та інформацією про те, чи є він високосним.
+  return {
+    year: year,
+    isLeap: isLeap,
+  };
 }
 console.log("Завдання: 6 ==============================");
 
@@ -164,13 +212,27 @@ function addDays(date, days) {
   // Перевірка, чи є вхідне значення об'єктом Date,це можно зробити перевіривши чи є date.getTime по типу функція .
   // Якщо date не є об'єктом Date, повертаємо рядок
   // "Помилка: вхідне значення має бути об'єктом Date"
+  if (!(date instanceof Date)) {
+    return "Помилка: вхідне значення має бути об'єктом Date";
+  }
   // Перевірка, чи є кількість днів числом.
   // Якщо days не є числом, функція поверне рядок
   // "Помилка: кількість днів має бути числом" та повертає undefined.
+  if (typeof days !== "number") {
+    return "Помилка: кількість днів має бути числом";
+  }
   // Збереження початкової дати для виведення в форматі ISO.
+  const inputDate = date.toISOString();
   // Додавання заданої кількості днів до дати.
+  date.setDate(date.getDate() + days);
   // Збереження результуючої дати для виведення в форматі ISO.
+  const resultDate = date.toISOString();
   // Повертаємо об'єкт з початковою датою, кількістю доданих днів та результуючою датою.
+  return {
+    inputDate: inputDate,
+    addedDays: days,
+    resultDate: resultDate,
+  };
 }
 
 console.log("Завдання: 7 ==============================");
@@ -209,10 +271,20 @@ function getDayOfWeek(date) {
   // Перевірка, чи є вхідне значення об'єктом Date,це можно зробити перевіривши чи є date.getTime по типу функція .
   // Якщо date не є об'єктом Date, повертаємо рядок
   // "Помилка: вхідне значення має бути об'єктом Date"
+  if (!(date instanceof Date)) {
+    return "Помилка: вхідне значення має бути об'єктом Date";
+  }
   // Збереження початкової дати для виведення  в форматі ISO.
+  const inputDate = date.toISOString();
   // Отримання дня тижня як числа (0 - неділя, 1 - понеділок, ..., 6 - субота).
+  const dayOfWeekIndex = date.getDate();
   // Отримання назви дня тижня з масиву daysOfWeek за індексом.
+  const dayOfWeek = daysOfWeek[dayOfWeekIndex];
   // Повертаємо об'єкт з початковою датою та днем тижня.
+  return {
+    inputDate: inputDate,
+    dayOfWeek: dayOfWeek,
+  };
 }
 
 console.log("Завдання: 8 ==============================");
@@ -236,13 +308,26 @@ function getDaysInMonth(date) {
   // Перевірка, чи є вхідне значення об'єктом Date,це можно зробити перевіривши чи є date.getTime по типу функція .
   // Якщо date не є об'єктом Date, повертаємо рядок
   // "Помилка: вхідне значення має бути об'єктом Date"
+  if (!(date instanceof Date)) {
+    return "Помилка: вхідне значення має бути об'єктом Date";
+  }
   // Збереження початкової дати для виведення  в форматі ISO.
+  let inputDate = date.toISOString();
   // Отримання поточного місяця.
+  const inputMonth = date.getMonth();
   // Отримання поточного року.
+  const inputYear = date.getFullYear();
   // Створення об'єкта Date для першого дня наступного місяця.
+  const nextMonth = new Date(inputYear, inputMonth + 1, 1);
   // Віднімання одного дня від наступного місяця, щоб отримати останній день поточного місяця.
+  const lastDayOfMonth = new Date(nextMonth - 1);
   // Отримання числа останнього дня поточного місяця - це кількість днів у місяці.
+  const dayInMonth = lastDayOfMonth.getDate();
   // Повертаємо об'єкт з початковою датою та кількістю днів у місяці.
+  return {
+    inputDate: inputDate,
+    dayInMonth: dayInMonth,
+  };
 }
 console.log("Завдання: 9 ==============================");
 
@@ -265,12 +350,26 @@ function getFormattedTime(date) {
   // Перевірка, чи є вхідне значення об'єктом Date,це можно зробити перевіривши чи є date.getTime по типу функція .
   // Якщо date не є об'єктом Date, повертаємо рядок
   // "Помилка: вхідне значення має бути об'єктом Date"
+  if (!(date instanceof Date)) {
+    return "Помилка: вхідне значення має бути об'єктом Date";
+  }
   // Збереження початкової дати для виведення  в форматі ISO.
+  let inputDate = date.toISOString();
   // Отримання годин.
+  const hours = date.getHours();
   // Отримання хвилин.
+  const minutes = date.getMinutes();
   // Отримання секунд.
+  const seconds = date.getSeconds();
   // Форматування часу у вигляді 'гг:хх:сс', ${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}.
+  const formattedTime = ` ${hours.toString().padStart(2, "0")}:${minutes
+    .toString()
+    .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
   // Повертаємо об'єкт з початковою датою та отформатованим часом.
+  return {
+    inputDate: inputDate,
+    formattedTime: formattedTime,
+  };
 }
 console.log("Завдання: 10 ==============================");
 
@@ -293,12 +392,29 @@ function getAge(birthDate) {
   // Перевірка, чи є вхідне значення об'єктом Date,це можно зробити перевіривши чи є birthDate.getTime по типу функція .
   // Якщо birthDate не є об'єктом Date, повертаємо рядок
   // "Помилка: вхідне значення має бути об'єктом Date"
+  if (!(birthDate instanceof Date)) {
+    return "Помилка: вхідне значення має бути об'єктом Date";
+  }
   // Отримання поточної дати.
+  const currentDate = new Date();
   // Вираховування різницю років між поточною датою та датою народження.
+  let age = currentDate.getFullYear() - birthDate.getFullYear();
   // Перевірка, чи поточна дата ще не пройшла день народження, тобто поточний місяць має бути менше, а якщо дорівнює дата має бути менше.
+  if (
+    currentDate.getMonth() < birthDate.getMonth() ||
+    (currentDate.getMonth() === birthDate.getMonth() &&
+      currentDate.getDate() < birthDate.getDate())
+  ) {
+    age--;
+  }
   // Якщо день народження ще не пройшов, вік потрібно зменшити на 1.
   // Збереження дати народження для виведення в форматі ISO.
+  const inputDate = birthDate.toISOString();
   // Повертаємо об'єкт з датою народження та обчисленим віком.
+  return {
+    birthDate: inputDate,
+    age: age,
+  };
 }
 console.log("Завдання: 11 ==============================");
 
